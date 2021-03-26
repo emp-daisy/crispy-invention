@@ -1,0 +1,183 @@
+.contributors-list {
+  &__wrapper {
+    margin: 0 50px;
+  }
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
+  justify-items: center;
+
+  &__filters {
+    &-group {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      margin: 20px;
+      flex-direction: column;
+      align-content: flex-end;
+      span {
+        font-weight: bold;
+        font-size: 1rem;
+      }
+    }
+
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    &-item {
+      background: none;
+      color: black;
+      display: inline-block;
+      cursor: pointer;
+      transition: 0.3s ease all;
+
+      span {
+        color: black;
+        width: 140px;
+        text-decoration: none;
+        -webkit-transition: 0.3s all ease;
+        transition: 0.3s ease all;
+        text-transform: uppercase;
+        display: inline-block;
+        text-align: center;
+        padding: 14px 0px;
+        font-size: 0.8rem;
+        border-top-right-radius: 2px;
+        border-top-left-radius: 2px;
+        position: relative;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.1);
+
+        &:hover,
+        &:focus {
+          color: white;
+          transition: 0.3s ease all;
+
+          &:before {
+            -webkit-transition: 0.5s all ease;
+            transition: 0.5s all ease;
+            left: 0;
+            right: 0;
+            opacity: 1;
+          }
+        }
+
+        &:before {
+          -webkit-transition: 0.5s all ease;
+          transition: 0.5s all ease;
+          position: absolute;
+          top: 0;
+          left: 50%;
+          right: 50%;
+          bottom: 0;
+          opacity: 0;
+          content: "";
+          background-color: black;
+          z-index: -2;
+        }
+      }
+
+      &.active {
+        transition: 0.3s ease all;
+
+        span {
+          background: black;
+          color: white;
+          transition: 0.3s ease all;
+          transition: 0.3s ease all;
+          text-decoration: none;
+          -webkit-transition: 0.3s all ease;
+          transition: 0.3s ease all;
+
+          &:hover,
+          &:focus {
+            color: white;
+            transition: 0.3s ease all;
+          }
+        }
+      }
+    }
+  }
+
+  &__user {
+    display: flex;
+    height: 200px;
+    width: 200px;
+    background-color: #2d3436;
+    background-image: linear-gradient(315deg, #2d3436 0%, #000000 74%);
+    background-color: #000000;
+    background-image: linear-gradient(315deg, #000000 0%, #7f8c8d 74%);
+    transition: all 500ms ease-in;
+    transition-delay: 1s;
+    width: 500px;
+    border-radius: 100px 10px 100px 100px;
+    transition: all 1s ease-out;
+    outline: none;
+    text-decoration: none;
+
+    &:hover {
+      opacity: 0.8;
+      cursor: pointer;
+    }
+
+    &-avatar {
+      img {
+        height: 200px;
+        width: 200px;
+        border-radius: 100%;
+        flex-shrink: 0;
+        object-fit: cover;
+
+        height: 180px;
+        width: 180px;
+        transition: none;
+        display: float;
+        position: relative;
+        border: 10px solid white;
+        margin: 0 0 0 0;
+        padding: 0 0 0 0;
+      }
+    }
+
+    &-info {
+      font-family: "Nunito", sans-serif;
+      color: white;
+      padding: 15px 30px 15px 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      &--fullname {
+        font-weight: 900;
+        font-size: 1.2rem;
+      }
+
+      &--bio {
+        line-height: 1.5em;
+        height: 3em;
+        overflow: hidden;
+        white-space: normal;
+        text-overflow: ellipsis;
+        width: 100%;
+        overflow: hidden;
+      }
+      &--email {
+        color: white;
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      &--records {
+        font-size: small;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+.contributors__header {
+  background: black;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+
+  &--title {
+    font-size: 1.5rem;
+
+    a, span {
+      text-decoration: none;
+      color: inherit;
+      outline: none;
+      cursor: pointer;
+    }
+  }
+}

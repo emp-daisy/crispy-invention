@@ -17,7 +17,7 @@ const RepositoryList = () => {
     sortOption,
     setSortOption,
   } = useRepoList(repo);
-  React.useEffect(() => getUserData(), []);// eslint-disable-line react-hooks/exhaustive-deps
+  React.useEffect(() => getUserData(), []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className="contributors-list__wrapper">
       {loading || activeContributors ? (
@@ -27,47 +27,50 @@ const RepositoryList = () => {
             <ul className="contributors-list__filters">
               <li
                 className={`contributors-list__filters-item${
-                  sortOption === "contribution" ? " active" : ""
+                  sortOption === "contributions" ? " active" : ""
                 }`}
-                onClick={() => setSortOption("contribution")}
-                onKeyUp={() => setSortOption("contribution")}>
+                onClick={() => setSortOption("contributions")}
+                onKeyUp={() => setSortOption("contributions")}>
                 <span className="filters-item-text">Contributions</span>
               </li>
               <li
                 className={`contributors-list__filters-item${
-                  sortOption === "follower" ? " active" : ""
+                  sortOption === "followers" ? " active" : ""
                 }`}
-                onClick={() => setSortOption("follower")}
-                onKeyUp={() => setSortOption("follower")}>
+                onClick={() => setSortOption("followers")}
+                onKeyUp={() => setSortOption("followers")}>
                 <span className="filters-item-text">Followers</span>
               </li>
               <li
                 className={`contributors-list__filters-item${
-                  sortOption === "repo" ? " active" : ""
+                  sortOption === "public_repos" ? " active" : ""
                 }`}
-                onClick={() => setSortOption("repo")}
-                onKeyUp={() => setSortOption("repo")}>
+                onClick={() => setSortOption("public_repos")}
+                onKeyUp={() => setSortOption("public_repos")}>
                 <span className="filters-item-text">Public Repo</span>
               </li>
               <li
                 className={`contributors-list__filters-item${
-                  sortOption === "gist" ? " active" : ""
+                  sortOption === "public_gists" ? " active" : ""
                 }`}
-                onClick={() => setSortOption("gist")}
-                onKeyUp={() => setSortOption("gist")}>
+                onClick={() => setSortOption("public_gists")}
+                onKeyUp={() => setSortOption("public_gists")}>
                 <span className="filters-item-text">Published Gist</span>
               </li>
             </ul>
           </div>
           <div className="contributors-list">
             {activeContributors?.map((contributor: Record<string, any>) => (
-              <Link to={contributor.login} className="contributors-list__user" key={contributor.id}>
+              <Link
+                to={contributor.login}
+                className="contributors-list__user"
+                key={contributor.id}>
                 <div className="contributors-list__user-avatar">
                   <img src={contributor.avatar_url} alt="avatar" />
                 </div>
                 <div className="contributors-list__user-info">
                   <h2 className="contributors-list__user-info--fullname">
-                    {contributor.name}
+                    {contributor.name || contributor.login}
                   </h2>
                   <h4 className="contributors-list__user-info--bio">
                     {contributor.bio}

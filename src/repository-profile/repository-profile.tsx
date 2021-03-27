@@ -39,7 +39,7 @@ const RepositoryProfile = () => {
               </div>
               <div className="contributors-profile__card--info">
                 <div className="contributors-profile__card--info-name">
-                  {contributor?.name}
+                  {contributor?.name || contributor?.login}
                 </div>
                 {contributor?.bio && (
                   <div className="contributors-profile__card--info-bio">

@@ -1,6 +1,7 @@
 import React from "react";
-import { EMPTY, Subject } from "rxjs";
+import { EMPTY, of, Subject } from "rxjs";
 import {
+  catchError,
   concatMap,
   expand,
   filter,
@@ -8,13 +9,17 @@ import {
   mergeMap,
   reduce,
   switchMap,
-  take,
   takeUntil,
   toArray,
 } from "rxjs/operators";
 import { fetch } from "../shared/services/api-service/api.service";
 
 const STORAGE_KEY = "angular-github-data";
+type SortOption =
+  | "public_gists"
+  | "public_repos"
+  | "followers"
+  | "contributions";
 
 const useRepoList = (username: string) => {
   const [contributors, setContributors] = React.useState<
@@ -23,7 +28,9 @@ const useRepoList = (username: string) => {
   const [activeContributors, setActiveContributors] = React.useState<
     Record<string, any>[] | null
   >(null);
-  const [sortOption, setSortOption] = React.useState("contribution");
+  const [sortOption, setSortOption] = React.useState<SortOption>(
+    "contributions"
+  );
   const [loading, setLoading] = React.useState(true);
   const perPage = React.useMemo(() => 10, []);
   const [page, setPage] = React.useState(1);
@@ -42,26 +49,16 @@ const useRepoList = (username: string) => {
       onPageChange(page);
     }
   }, [sortOption, contributors]); // eslint-disable-line react-hooks/exhaustive-deps
+  React.useEffect(() => {
+      getContributorsDetails();
+  }, [sortOption]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const onSort = (contributors: any[]) => {
-    switch (sortOption) {
-      case "contribution":
-        return contributors.sort(
-          (a: any, b: any) => b.contributions - a.contributions
-        );
-      case "follower":
-        return contributors.sort((a: any, b: any) => b.followers - a.followers);
-      case "repo":
-        return contributors.sort(
-          (a: any, b: any) => b.public_repos - a.public_repos
-        );
-      case "gist":
-        return contributors.sort(
-          (a: any, b: any) => b.public_gists - a.public_gists
-        );
-      default:
-        return contributors;
-    }
+  const onSort = (contributorList: any[]) => {
+    return (
+      contributorList?.sort(
+        (a: any, b: any) => b[sortOption] - a[sortOption]
+      ) || []
+    );
   };
 
   const getUserData = () => {
@@ -70,6 +67,7 @@ const useRepoList = (username: string) => {
     if (data) {
       // if data exist in cache
       setContributors(onSort(JSON.parse(data)));
+
       setLoading(false);
       return;
     }
@@ -108,6 +106,7 @@ const useRepoList = (username: string) => {
         mergeMap((res: any) =>
           fetch(res.url).pipe(
             takeUntil(destroyed$),
+            catchError(() => of({})), //TODO: Handle rate limit better as this bypasses error from limit
             map(({ data }: any) => ({ ...res, ...data }))
           )
         ),
@@ -116,13 +115,42 @@ const useRepoList = (username: string) => {
       .subscribe(
         (res: any) => {
           // to save up on github rate limit
-          // TODO: currently exceeds browser limit
-          // localStorage.setItem(STORAGE_KEY, JSON.stringify(res));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(res));
           setContributors(onSort(res));
         },
         () => setContributors(null)
       )
       .add(() => setLoading(false));
+  };
+
+  const getContributorsDetails = () => {
+    if (
+      contributors?.filter(({ followers }) => followers === undefined).length
+    ) {
+      setLoading(true);
+      of(contributors)
+        .pipe(
+          takeUntil(destroyed$),
+          switchMap((data: any) => data),
+          concatMap((existingData: any) => {
+            if (existingData.followers !== undefined) return of(existingData);
+            return fetch(
+              `https://api.github.com/users/${existingData.login}`
+            ).pipe(
+              takeUntil(destroyed$),
+              catchError(() => of({})), //TODO: Handle rate limit better as this bypasses error from limit
+              map(({ data }: any) => ({ ...existingData, ...data }))
+            );
+          }),
+          toArray()
+        )
+        .subscribe((res) => {
+          // to save up on github rate limit
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(res));
+          setContributors(onSort(res));
+        })
+        .add(() => setLoading(false));
+    }
   };
 
   const onPageChange = (page: number) => {

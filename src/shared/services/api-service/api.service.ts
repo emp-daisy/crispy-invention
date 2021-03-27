@@ -15,12 +15,13 @@ const parseGithubPagination = (link: string) =>
       obj[curr[1]] = parseInt(curr[0], 10);
       return obj;
     }, {});
-const access_token ='de74bdd22094f582bbcb46527381ef2a0e5c9e84'
+const access_token ='de74bdd22094f582bbcb46527381ef2a0e5c9e84';
 export const fetch = (url: string) =>
   new Observable((observer) => {
     axios
       .get(url, {
         headers: {
+          'Accept': 'application/vnd.github.v3+json',
           'Authorization': `token ${access_token}`
         }
       })
